@@ -32,4 +32,4 @@ class Scanner:
             if input_type == "text":
                 input_value = "test"
 
-            post_data
+           post_data

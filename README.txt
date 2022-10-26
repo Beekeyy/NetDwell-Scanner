@@ -1,4 +1,5 @@
 creating vulnerability-scanner
+this vulnerability-scanner searching xss-vulnerabilities on different websites
 
 using librarries:
 1) requets

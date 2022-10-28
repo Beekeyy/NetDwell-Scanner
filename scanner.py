@@ -32,7 +32,7 @@ class Scanner:
 
     def extract_forms(self, url):#extracting forms
         response = self.session.get(url)
-        parsed_html = BeautifulSoup(response.content)
+        parsed_html = BeautifulSoup(response.content, features="html.parser")
         return parsed_html.findAll("form")
 
     def submit_form(self, form, value, url):
@@ -68,7 +68,7 @@ class Scanner:
                 print("[+] Testing form in" + link)
                 is_vulnerable_to_xss = self.test_xss_in_link(link)
                 if is_vulnerable_to_xss:
-                    print("/n/n[***] Discovered XSS in " + link)
+                    print("\n\n[***] Discovered XSS in " + link)
 
     def test_xss_in_link(self, url):
         xss_test_script = "<sCript>alert('test')</scriPt>"

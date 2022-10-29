@@ -1,9 +1,11 @@
 from tkinter import *
 from tkinter import ttk
+import win32gui
+import win32con
 #from vulnerability_scanner import *
 
 window = Tk()
-window.title('Vulnerability Scanner by Network Dwellers')
+window.title('NetDwell Scanner')
 window.geometry('960x540')
 window.focus_set()
 window.resizable(False, False)
@@ -31,7 +33,7 @@ def selected(event):
         scan_btn['state'] = 'disabled'
 
 def handle_focus_in(_):
-    ent.delete(0, end)
+    ent.delete(0, END)
     ent.config(fg = 'black')
 
 def scan_display():
@@ -44,6 +46,7 @@ def scan_display():
     current_pos_y = int(current_pos_x.rpartition('+')[2]) + 111
     current_pos_x = int(current_pos_x.rpartition('+')[0]) + 11
     scan_window.geometry('468x436' + '+' + str(current_pos_x) + '+' + str(current_pos_y))
+    scan_window(1, disable_scan_minbox)
     scan_window.protocol('WM_DELETE_WINDOW', enabling_scan)
     if 'normal' == scan_window.state():
         scan_btn['state'] = 'disabled'
@@ -72,7 +75,23 @@ def enabling_scan():
     ent['state'] = 'normal'
     scan_window.destroy()
 
-#Label(text = 'Enter scanning link:').place(x = 20, y = 50)
+def tracking(self):
+    try:
+        current_pos_x = window.geometry()[8:]
+        current_pos_y = int(current_pos_x.rpartition('+')[2]) + 111
+        current_pos_x = int(current_pos_x.rpartition('+')[0]) + 481
+        stat_window.geometry('468x436' + '+' + str(current_pos_x) + '+' + str(current_pos_y))
+        stat_window.lift()
+    except:
+        pass
+    try:
+        current_pos_x1 = window.geometry()[8:]
+        current_pos_y1 = int(current_pos_x1.rpartition('+')[2]) + 111
+        current_pos_x1 = int(current_pos_x1.rpartition('+')[0]) + 11
+        scan_window.geometry('468x436' + '+' + str(current_pos_x1) + '+' + str(current_pos_y1))
+        scan_window.lift()
+    except:
+        pass
 
 c.create_rectangle(10, 10, 950, 530, fill = 'lightgrey')
 
@@ -86,7 +105,7 @@ c.create_line(951, 8, 951, 531, fill = 'black', width = 2)
 c.create_line(8, 529, 951, 529, fill = 'black', width = 2)
 
 ent = Entry(fg = 'grey')
-ent.place(x = 149, y = 11, width = 536, height = 48,)
+ent.place(x = 148, y = 11, width = 536, height = 48,)
 ent.insert(0, 'Enter scanning link...')
 ent.bind('<FocusIn>', handle_focus_in)
 
@@ -100,5 +119,7 @@ cbox = ttk.Combobox(state = 'readonly', values = ['Select vulnerability', 'XSS-v
 cbox.place(x = 11, y = 11, width = 135, height = 48)
 cbox.current('0')
 cbox.bind('<<ComboboxSelected>>', selected)
+
+window.bind('<Configure>', tracking)
 
 window.mainloop()

@@ -1,7 +1,5 @@
 from tkinter import *
 from tkinter import ttk
-import win32gui
-import win32con
 #from vulnerability_scanner import *
 
 window = Tk()
@@ -46,7 +44,7 @@ def scan_display():
     current_pos_y = int(current_pos_x.rpartition('+')[2]) + 111
     current_pos_x = int(current_pos_x.rpartition('+')[0]) + 11
     scan_window.geometry('468x436' + '+' + str(current_pos_x) + '+' + str(current_pos_y))
-    scan_window(1, disable_scan_minbox)
+    scan_window.attributes('-toolwindow', True)
     scan_window.protocol('WM_DELETE_WINDOW', enabling_scan)
     if 'normal' == scan_window.state():
         scan_btn['state'] = 'disabled'
@@ -62,6 +60,7 @@ def stat_display():
     current_pos_y = int(current_pos_x.rpartition('+')[2]) + 111
     current_pos_x = int(current_pos_x.rpartition('+')[0]) + 481
     stat_window.geometry('468x436' + '+' + str(current_pos_x) + '+' + str(current_pos_y))
+    stat_window.attributes('-toolwindow', True)
     stat_window.protocol('WM_DELETE_WINDOW', enabling_stat)
     if 'normal' == stat_window.state():
         stat_btn['state'] = 'disabled'
@@ -74,6 +73,8 @@ def enabling_scan():
     cbox['state'] = 'readonly'
     ent['state'] = 'normal'
     scan_window.destroy()
+
+
 
 def tracking(self):
     try:
@@ -89,7 +90,7 @@ def tracking(self):
         current_pos_y1 = int(current_pos_x1.rpartition('+')[2]) + 111
         current_pos_x1 = int(current_pos_x1.rpartition('+')[0]) + 11
         scan_window.geometry('468x436' + '+' + str(current_pos_x1) + '+' + str(current_pos_y1))
-        scan_window.lift()
+        #scan_window.lift()
     except:
         pass
 

@@ -11,6 +11,7 @@ class Scanner:
         self.target_url = url
         self.target_links = []
         self.links_to_ignore = ignore_links
+        self.output_data = []
 
     def  extract_links_from(self, url):
         response = self.session.get(url)
@@ -64,6 +65,8 @@ class Scanner:
                 print("[+] Testing form in" + link)
                 is_vulnerable_to_xss = self.test_xss_in_form(form, link)
                 if is_vulnerable_to_xss:
+                    output_form = "\n\n[***] XSS discovered in" + link + " in the following form"
+                    self.output_datadata.append(output_form)
                     print("\n\n[***] XSS discovered in" + link + " in the following form")
                     print(form)
                 
@@ -72,6 +75,8 @@ class Scanner:
                 print("[+] Testing " + link)
                 is_vulnerable_to_xss = self.test_xss_in_link(link)
                 if is_vulnerable_to_xss:
+                    output_link = "\n\n[***] XSS discovered in" + link
+                    self.output_data.append(output_link)
                     print("\n\n[***] XSS discovered in" + link)
 
     def test_xss_in_form(self, form, url):

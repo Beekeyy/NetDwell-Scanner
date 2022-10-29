@@ -1,6 +1,13 @@
 from tkinter import *
 from tkinter import ttk
+import scanner
+import output
 #from vulnerability_scanner import *
+
+#==============================================
+#scanner launching
+
+
 
 window = Tk()
 window.title('NetDwell Scanner')
@@ -30,12 +37,28 @@ def selected(event):
     else:
         scan_btn['state'] = 'disabled'
 
+def scan_process():
+    #http://localhost/dvwa/
+    target_url = web_url 
+    links_to_ignore = ["http://localhost/dvwa/logout.php"]
+    print(target_url)
+    data_dict = {"username": "admin", "password": "password", "Login": "Login"}
+
+    vuln_scanner = scanner.Scanner(target_url, links_to_ignore)
+    vuln_scanner.session.post("http://localhost/dvwa/login.php", data = data_dict)
+
+    vuln_scanner.crawl()
+    vuln_scanner.run_scanner()
+
+
 def handle_focus_in(_):
     ent.delete(0, END)
     ent.config(fg = 'black')
 
 def scan_display():
-    target_url = str(ent.get())
+    global web_url
+    web_url = str(ent.get()) #defining link
+    scan_process()
     global scan_window
     scan_window = Toplevel(window)
     scan_window.title('Scanning')
@@ -45,6 +68,11 @@ def scan_display():
     current_pos_x = int(current_pos_x.rpartition('+')[0]) + 11
     scan_window.geometry('468x436' + '+' + str(current_pos_x) + '+' + str(current_pos_y))
     scan_window.attributes('-toolwindow', True)
+    f = output.f
+    res = Text(scan_window, state = 'disabled')
+    #res = Label(scan_window, text = f)
+    res.insert(1.0,f)
+    res.place(x = 0, y = 0)
     scan_window.protocol('WM_DELETE_WINDOW', enabling_scan)
     stat_btn['state'] = 'normal'
     if 'normal' == scan_window.state():

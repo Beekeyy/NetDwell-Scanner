@@ -2,19 +2,12 @@ from tkinter import *
 from tkinter import ttk
 import scanner
 import output
-#from vulnerability_scanner import *
-
-#==============================================
-#scanner launching
-
-
 
 window = Tk()
 window.title('NetDwell Scanner')
 window.geometry('960x540')
 window.focus_set()
 window.resizable(False, False)
-#window.iconbitmap('C:/Users/stud/Downloads/wisetree.ico')
 
 mainmenu = Menu(window)
 window.config(menu = mainmenu)
@@ -41,7 +34,6 @@ def scan_process():
     #http://localhost/dvwa/
     target_url = web_url 
     links_to_ignore = ["http://localhost/dvwa/logout.php"]
-    print(target_url)
     data_dict = {"username": "admin", "password": "password", "Login": "Login"}
 
     vuln_scanner = scanner.Scanner(target_url, links_to_ignore)
@@ -69,13 +61,13 @@ def scan_display():
     scan_window.geometry('468x436' + '+' + str(current_pos_x) + '+' + str(current_pos_y))
     scan_window.attributes('-toolwindow', True)
     f = output.f
-    res = Text(scan_window, width = 58, height = 30)
+    res = Text(scan_window, width = 50, height = 30)
     res.insert(1.0,f)
-    scroll = Scrollbar(command = res.yview)
-    scroll.pack(side = LEFT, fill = Y)
-    res.config(yscrollcommand = scroll.set)
+    res.pack(side = LEFT, fill = BOTH, expand = 1)
+    scrollbar = ttk.Scrollbar(scan_window, orient = 'vertical', command = res.yview)
+    scrollbar.pack(side = RIGHT, fill = Y)
+    res['yscrollcommand'] = scrollbar.set
     res['state'] = 'disabled'
-    res.place(x = 0, y = 0)
     scan_window.protocol('WM_DELETE_WINDOW', enabling_scan)
     stat_btn['state'] = 'normal'
     if 'normal' == scan_window.state():

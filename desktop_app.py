@@ -46,6 +46,7 @@ def scan_display():
     scan_window.geometry('468x436' + '+' + str(current_pos_x) + '+' + str(current_pos_y))
     scan_window.attributes('-toolwindow', True)
     scan_window.protocol('WM_DELETE_WINDOW', enabling_scan)
+    stat_btn['state'] = 'normal'
     if 'normal' == scan_window.state():
         scan_btn['state'] = 'disabled'
         cbox['state'] = 'disabled'
@@ -70,11 +71,14 @@ def enabling_stat():
     stat_window.destroy()
 def enabling_scan():
     scan_btn['state'] = 'normal'
+    stat_btn['state'] = 'disabled'
     cbox['state'] = 'readonly'
     ent['state'] = 'normal'
     scan_window.destroy()
-
-
+    try:
+        stat_window.destroy()
+    except:
+        pass
 
 def tracking(self):
     try:
@@ -82,7 +86,6 @@ def tracking(self):
         current_pos_y = int(current_pos_x.rpartition('+')[2]) + 111
         current_pos_x = int(current_pos_x.rpartition('+')[0]) + 481
         stat_window.geometry('468x436' + '+' + str(current_pos_x) + '+' + str(current_pos_y))
-        stat_window.lift()
     except:
         pass
     try:
@@ -90,7 +93,7 @@ def tracking(self):
         current_pos_y1 = int(current_pos_x1.rpartition('+')[2]) + 111
         current_pos_x1 = int(current_pos_x1.rpartition('+')[0]) + 11
         scan_window.geometry('468x436' + '+' + str(current_pos_x1) + '+' + str(current_pos_y1))
-        #scan_window.lift()
+        scan_window.lift()
     except:
         pass
 
@@ -113,7 +116,7 @@ ent.bind('<FocusIn>', handle_focus_in)
 scan_btn = Button(state = 'disabled', text = 'Start scanning', command = scan_display)
 scan_btn.place(x = 688, y = 11, width = 135, height = 48)
 
-stat_btn = Button(text = 'Statistics', command = stat_display)
+stat_btn = Button(state = 'disabled', text = 'Statistics', command = stat_display)
 stat_btn.place(x = 825, y = 11, width = 125, height = 48)
 
 cbox = ttk.Combobox(state = 'readonly', values = ['Select vulnerability', 'XSS-vulnerability', 'SQL injection', 'PHP injection'])

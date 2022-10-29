@@ -2,19 +2,12 @@ from tkinter import *
 from tkinter import ttk
 import scanner
 import output
-#from vulnerability_scanner import *
-
-#==============================================
-#scanner launching
-
-
 
 window = Tk()
 window.title('NetDwell Scanner')
 window.geometry('960x540')
 window.focus_set()
 window.resizable(False, False)
-#window.iconbitmap('C:/Users/stud/Downloads/wisetree.ico')
 
 mainmenu = Menu(window)
 window.config(menu = mainmenu)

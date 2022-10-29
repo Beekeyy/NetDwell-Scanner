@@ -1,7 +1,8 @@
-from urllib import response
+from urllib import request
 import requests
 import re
 from urllib.parse import urljoin
+import urllib.parse
 from bs4 import BeautifulSoup
 
 class Scanner:
@@ -11,31 +12,33 @@ class Scanner:
         self.target_links = []
         self.links_to_ignore = ignore_links
 
-    def extract_links_form(self, url):
+    def  extract_links_from(self, url):
         response = self.session.get(url)
         return re.findall('(?:href=")(.*?)"', str(response.content))
-
-    def crawl(self, url = None):#getting all urls
+    
+    def crawl(self, url = None):
         if url == None:
             url = self.target_url
-        href_links = self.extract_links_form(url)
+        a = self.session.get(self.target_url)
+        href_links = self.extract_links_from(url)
+        
         for link in href_links:
             link = urljoin(url, link)
 
-            if "#" in link:
+            if '#' in link:
                 link = link.split("#")[0]
 
-            if self.target_url in link and link not in self.target_links and link not in self.links_to_ignore:
+            if (self.target_url in link) and (link not in self.target_links) and (link not in self.links_to_ignore):
                 self.target_links.append(link)
                 print(link)
                 self.crawl(link)
-
-    def extract_forms(self, url):#extracting forms
+            
+    def extract_forms(self, url):
         response = self.session.get(url)
         parsed_html = BeautifulSoup(response.content, features="html.parser")
         return parsed_html.findAll("form")
 
-    def submit_form(self, form, value, url):
+    def submit_for(self, form, value, url):
         action = form.get("action")
         post_url = urljoin(url, action)
         method = form.get("method")
@@ -53,7 +56,7 @@ class Scanner:
         if method == "post":
             return self.session.post(post_url, data = post_data)#using arg data
         return self.session.get(post_url, params = post_data)#using arg params
-    
+
     def run_scanner(self):
         for link in self.target_links:
             forms = self.extract_forms(link)
@@ -61,23 +64,25 @@ class Scanner:
                 print("[+] Testing form in" + link)
                 is_vulnerable_to_xss = self.test_xss_in_form(form, link)
                 if is_vulnerable_to_xss:
-                    print("\n\n[***] XSS discovered in " + link + " in thr following form")
+                    print("\n\n[***] XSS discovered in" + link + " in the following form")
                     print(form)
+                
 
             if "=" in link:
-                print("[+] Testing form in" + link)
+                print("[+] Testing " + link)
                 is_vulnerable_to_xss = self.test_xss_in_link(link)
                 if is_vulnerable_to_xss:
-                    print("\n\n[***] Discovered XSS in " + link)
+                    print("\n\n[***] XSS discovered in" + link)
+
+    def test_xss_in_form(self, form, url):
+        xss_test_script = "<sCript>alert('test')</scriPt>"
+        response = self.submit_for(form, xss_test_script, url)
+        print(response.content)
+        if xss_test_script in str(response.content):
+            return True
 
     def test_xss_in_link(self, url):
         xss_test_script = "<sCript>alert('test')</scriPt>"
         url = url.replace("=", "=" + xss_test_script)
-        response = self.session.get(url)
-        return xss_test_script in response.content
-
-    def test_xss_in_form(self, form, url):
-        xss_test_script = "<sCript>alert('test')</scriPt>"#replacing "c" with "C" and "p" with "P" to bypass filtering
-        response = self.submit_form(form, xss_test_script, url)
-        if xss_test_script in str(response.content): #checking for the presence of a script in the html code of an element
-            return True #if vulnerable, then the output is True
+        if xss_test_script in url:
+            return True

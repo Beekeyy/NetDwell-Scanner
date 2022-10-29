@@ -69,9 +69,12 @@ def scan_display():
     scan_window.geometry('468x436' + '+' + str(current_pos_x) + '+' + str(current_pos_y))
     scan_window.attributes('-toolwindow', True)
     f = output.f
-    res = Text(scan_window, state = 'disabled')
-    #res = Label(scan_window, text = f)
+    res = Text(scan_window, width = 58, height = 30)
     res.insert(1.0,f)
+    scroll = Scrollbar(command = res.yview)
+    scroll.pack(side = LEFT, fill = Y)
+    res.config(yscrollcommand = scroll.set)
+    res['state'] = 'disabled'
     res.place(x = 0, y = 0)
     scan_window.protocol('WM_DELETE_WINDOW', enabling_scan)
     stat_btn['state'] = 'normal'
